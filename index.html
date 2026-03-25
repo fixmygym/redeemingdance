@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redeeming Dance — Leads Dashboard</title>
+<style>
+  :root {
+    --blue: #007AFF; --green: #34C759; --red: #FF3B30; --orange: #FF9500;
+    --teal: #5AC8FA; --purple: #AF52DE; --indigo: #5856D6;
+    --bg: #F2F2F7; --card: #FFFFFF; --border: #E5E5EA;
+    --text: #1C1C1E; --sub: #6C6C70; --label: #8E8E93;
+    --radius: 14px; --radius-sm: 8px;
+    --shadow: 0 2px 8px rgba(0,0,0,.07), 0 0 0 1px rgba(0,0,0,.04);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 20px 20px 40px; }
+
+  /* Header */
+  .header { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 18px 24px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+  .header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.4px; }
+  .header-meta { font-size: 12px; color: var(--label); text-align: right; }
+  .header-meta strong { color: var(--text); display: block; font-size: 13px; }
+
+  /* Game Plan */
+  .gameplan-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 18px 22px; margin-bottom: 16px; border-left: 5px solid var(--orange); }
+  .gameplan-card h2 { font-size: 14px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .6px; color: var(--orange); margin-bottom: 4px; }
+  .gameplan-subtitle { font-size: 12px; color: var(--sub); margin-bottom: 14px; }
+  .gameplan-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .gp-col { border-radius: var(--radius-sm); padding: 14px 16px; }
+  .gp-col h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+  .gp-col-urgent { background: #fff1f0; border: 1px solid #ffccc7; }
+  .gp-col-urgent h3 { color: var(--red); }
+  .gp-col-money { background: #fffbe6; border: 1px solid #ffe58f; }
+  .gp-col-money h3 { color: #b8770f; }
+  .gp-col-cold { background: #f0f5ff; border: 1px solid #adc6ff; }
+  .gp-col-cold h3 { color: var(--indigo); }
+  .gp-col-warm { background: #f6ffed; border: 1px solid #b7eb8f; }
+  .gp-col-warm h3 { color: #389e0d; }
+  .gp-item { font-size: 12.5px; padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,.06); line-height: 1.4; }
+  .gp-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .gp-item strong { display: block; font-weight: 600; }
+  .gp-item span { color: var(--sub); font-size: 11.5px; }
+
+  /* KPI Grid */
+  .kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 16px; }
+  .kpi { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 16px 18px; }
+  .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--label);
+    margin-bottom: 6px; }
+  .kpi-value { font-size: 28px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
+  .kpi-sub { font-size: 11px; color: var(--sub); margin-top: 4px; }
+  .kpi.red .kpi-value { color: var(--red); }
+  .kpi.orange .kpi-value { color: var(--orange); }
+  .kpi.green .kpi-value { color: var(--green); }
+  .kpi.blue .kpi-value { color: var(--blue); }
+
+  /* Charts */
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .chart-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 18px 20px; }
+  .chart-card h3 { font-size: 13px; font-weight: 600; margin-bottom: 14px; }
+  .donut-wrap { display: flex; align-items: center; gap: 20px; }
+  .donut-legend { flex: 1; }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 11.5px;
+    padding: 3px 0; }
+  .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .legend-pct { margin-left: auto; font-weight: 600; font-size: 11px; color: var(--sub); }
+
+  /* Two-col */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px 20px; }
+  .card h3 { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+
+  /* Priority list */
+  .priority-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0;
+    border-bottom: 1px solid var(--border); }
+  .priority-item:last-child { border-bottom: none; }
+  .priority-rank { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 10px; font-weight: 700; color: white; flex-shrink: 0; margin-top: 1px; }
+  .priority-info { flex: 1; }
+  .priority-name { font-weight: 600; font-size: 13px; }
+  .priority-detail { font-size: 11.5px; color: var(--sub); }
+  .priority-days { font-size: 12px; font-weight: 700; flex-shrink: 0; text-align: right; }
+
+  /* Funnel */
+  .funnel-item { padding: 8px 10px; border-radius: var(--radius-sm); margin-bottom: 6px;
+    display: flex; align-items: center; justify-content: space-between; font-size: 12.5px; }
+  .funnel-label { font-weight: 500; }
+  .funnel-count { font-weight: 800; font-size: 16px; }
+  .funnel-pct { font-size: 11px; color: var(--sub); }
+
+  /* Never contacted */
+  .never-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 18px 20px; margin-bottom: 16px; border-left: 5px solid var(--red); }
+  .never-card h3 { font-size: 13px; font-weight: 700; color: var(--red); margin-bottom: 4px; }
+  .never-card .sub { font-size: 12px; color: var(--sub); margin-bottom: 14px; }
+  .never-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .never-item { background: #fff1f0; border: 1px solid #ffccc7; border-radius: var(--radius-sm);
+    padding: 12px 14px; }
+  .never-name { font-weight: 600; font-size: 13px; }
+  .never-meta { font-size: 11px; color: var(--sub); margin-top: 2px; }
+  .never-days { font-size: 26px; font-weight: 800; color: var(--red); line-height: 1;
+    margin-top: 10px; }
+  .never-label { font-size: 10px; color: var(--red); opacity: .7; }
+
+  /* Table */
+  .table-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 18px 20px; }
+  .table-card h3 { font-size: 13px; font-weight: 600; margin-bottom: 14px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { font-size: 10.5px; text-transform: uppercase; letter-spacing: .5px; color: var(--label);
+    font-weight: 600; padding: 0 10px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+  td { padding: 9px 10px; font-size: 12.5px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafafa; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10.5px;
+    font-weight: 500; margin: 1px 2px; }
+  .tag-green { background: #f0fff4; color: #16a34a; border: 1px solid #bbf7d0; }
+  .tag-blue { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+  .tag-orange { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+  .tag-purple { background: #faf5ff; color: #7c3aed; border: 1px solid #e9d5ff; }
+  .tag-red { background: #fff1f0; color: #dc2626; border: 1px solid #fecaca; }
+  .tag-gray { background: #f9fafb; color: #4b5563; border: 1px solid #e5e7eb; }
+  .days-fresh { color: var(--green); font-weight: 700; font-size: 11.5px; }
+  .days-warn { color: var(--orange); font-weight: 700; font-size: 11.5px; }
+  .days-danger { color: var(--red); font-weight: 700; font-size: 11.5px; }
+  .days-never { background: #ffe5e5; color: var(--red); font-weight: 700; font-size: 10.5px;
+    padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+  .row-never td { background: #fff8f8; }
+  .row-hot td { background: #fff8f0; }
+  .row-fresh td { background: #f7fff9; }
+
+  /* Footer */
+  .footer { text-align: center; font-size: 11px; color: var(--label); margin-top: 24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <h1>💃 Redeeming Dance — Leads Dashboard</h1>
+    <div style="font-size:12px;color:var(--sub);margin-top:3px;">Active leads · Last 60 days · Live conversation data</div>
+  </div>
+  <div class="header-meta">
+    <strong>Wednesday, March 25, 2026</strong>
+    Updated this morning · 37 active leads
+  </div>
+</div>
+
+<!-- TODAY'S GAME PLAN -->
+<div class="gameplan-card">
+  <h2>🗓 Today's Game Plan</h2>
+  <div class="gameplan-subtitle">Hey team — here's who to focus on today. Read this before touching anything else.</div>
+  <div class="gameplan-grid">
+
+    <div class="gp-col gp-col-urgent">
+      <h3>🚨 Call Right Now</h3>
+      <div class="gp-item">
+        <strong>Hollie Alvarado</strong>
+        <span>Appt set, 9 days silent. Emma is registered but no one has checked in. Call today — if no answer, text "confirming Emma's spot."</span>
+      </div>
+      <div class="gp-item">
+        <strong>Terrell Chatman</strong>
+        <span>He texted us 28 days ago but we went quiet. Adult dancer, serious lead. Unread message — call now.</span>
+      </div>
+      <div class="gp-item">
+        <strong>Daisy Su</strong>
+        <span>New lead, joy is the student, 30 days since last touch. We gave her class options — never got a response. Try one more time.</span>
+      </div>
+    </div>
+
+    <div class="gp-col gp-col-money">
+      <h3>💰 Collect Payment</h3>
+      <div class="gp-item">
+        <strong>Holly Sadler → Nora</strong>
+        <span>Invoice sent, $49 pending. Contacted today but make sure she pays before the first class.</span>
+      </div>
+      <div class="gp-item">
+        <strong>Laura Moore</strong>
+        <span>Invoice sent yesterday. Adult lead from web. Text a gentle reminder — "Just checking in, is the invoice link working for you?"</span>
+      </div>
+      <div class="gp-item">
+        <strong>Stephanie Hutchinson → Sophie</strong>
+        <span>Invoice-paid 15 days ago — verify she's enrolled and attend confirmed. May need a welcome + schedule reminder.</span>
+      </div>
+    </div>
+
+    <div class="gp-col gp-col-cold">
+      <h3>📞 Never Contacted</h3>
+      <div class="gp-item">
+        <strong>Abbagail Rosenquist</strong>
+        <span>42 days in CRM, zero outreach. No student listed — unclear if youth or adult. Call to qualify.</span>
+      </div>
+      <div class="gp-item">
+        <strong>Eliana Torres → Camila</strong>
+        <span>42 days, never contacted. Youth lead. If no answer, send a warm intro text.</span>
+      </div>
+      <div class="gp-item">
+        <strong>Shannon Boxell</strong>
+        <span>40 days, no student info, never contacted. Quick outreach — "Hi Shannon, did you still want to learn more about our programs?"</span>
+      </div>
+      <div class="gp-item">
+        <strong>Lauren H → Rumi</strong>
+        <span>28 days, automated sequence ran but zero real human touch. Send a personal message today.</span>
+      </div>
+      <div class="gp-item">
+        <strong>Shailesh Gupta</strong>
+        <span>15 days, zero contact. Adult lead. Fresh enough to recover — reach out today.</span>
+      </div>
+    </div>
+
+    <div class="gp-col gp-col-warm">
+      <h3>✅ Confirm & Warm</h3>
+      <div class="gp-item">
+        <strong>Sanjana Patri</strong>
+        <span>Came to studio yesterday! Appt set. Follow up on how she's feeling — easy warm close.</span>
+      </div>
+      <div class="gp-item">
+        <strong>Tammy Oatley</strong>
+        <span>Adult CTR lead, appt confirmed. Check that she has everything for her first class.</span>
+      </div>
+      <div class="gp-item">
+        <strong>Aimee Drake</strong>
+        <span>Appt set + "need to book" tag. Follow up to lock in her start date today.</span>
+      </div>
+      <div class="gp-item">
+        <strong>Gracie Hageman</strong>
+        <span>Appt set, "need to book." Been a few days — confirm her schedule.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- KPI CARDS -->
+<div class="kpi-grid">
+  <div class="kpi red">
+    <div class="kpi-label">Never Contacted</div>
+    <div class="kpi-value">5</div>
+    <div class="kpi-sub">leads with zero human touch</div>
+  </div>
+  <div class="kpi red">
+    <div class="kpi-label">Longest Silent</div>
+    <div class="kpi-value">42d</div>
+    <div class="kpi-sub">Abbagail &amp; Eliana Torres</div>
+  </div>
+  <div class="kpi orange">
+    <div class="kpi-label">Stale New Leads</div>
+    <div class="kpi-value">8</div>
+    <div class="kpi-sub">new leads, 14+ days silent</div>
+  </div>
+  <div class="kpi orange">
+    <div class="kpi-label">Invoice Pending</div>
+    <div class="kpi-value">2</div>
+    <div class="kpi-sub">Holly Sadler + Laura Moore</div>
+  </div>
+  <div class="kpi green">
+    <div class="kpi-label">Appt Set</div>
+    <div class="kpi-value">6</div>
+    <div class="kpi-sub">in the pipeline</div>
+  </div>
+  <div class="kpi blue">
+    <div class="kpi-label">Total Active</div>
+    <div class="kpi-value">37</div>
+    <div class="kpi-sub">last 60 days</div>
+  </div>
+</div>
+
+<!-- CHARTS ROW -->
+<div class="charts-row">
+
+  <div class="chart-card">
+    <h3>Stage Mix</h3>
+    <div class="donut-wrap">
+      <svg width="90" height="90" viewBox="0 0 90 90" id="stagesSvg"></svg>
+      <div class="donut-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#34C759"></div>Invoice Paid<span class="legend-pct">3%</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#FF9500"></div>Invoice Sent<span class="legend-pct">5%</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#007AFF"></div>Appt Set<span class="legend-pct">16%</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#5AC8FA"></div>In Outreach<span class="legend-pct">22%</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#8E8E93"></div>New Lead<span class="legend-pct">41%</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#FF3B30"></div>Never Contacted<span class="legend-pct">14%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <h3>Inbound vs Outbound (last touch)</h3>
+    <div class="donut-wrap">
+      <svg width="90" height="90" viewBox="0 0 90 90" id="dirSvg"></svg>
+      <div class="donut-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#007AFF"></div>Outbound last<span class="legend-pct">78%</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#34C759"></div>Inbound last<span class="legend-pct">22%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <h3>Urgency Distribution</h3>
+    <div class="donut-wrap">
+      <svg width="90" height="90" viewBox="0 0 90 90" id="urgSvg"></svg>
+      <div class="donut-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#FF3B30"></div>🔴 30+ days silent<span class="legend-pct">30%</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#FF9500"></div>🟠 14–29 days<span class="legend-pct">32%</span></div>
+        <div class="legend-item"><div class="legend-dot" style="background:#34C759"></div>🟢 0–13 days<span class="legend-pct">38%</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- PRIORITY + FUNNEL -->
+<div class="two-col">
+  <div class="card">
+    <h3>🎯 Priority Hit List — Who Needs a Call Today</h3>
+    <div class="priority-item">
+      <div class="priority-rank" style="background:var(--red)">1</div>
+      <div class="priority-info">
+        <div class="priority-name">Abbagail Rosenquist</div>
+        <div class="priority-detail">NEVER contacted · Unknown if youth or adult · In CRM 42 days</div>
+      </div>
+      <div class="priority-days" style="color:var(--red)">42d</div>
+    </div>
+    <div class="priority-item">
+      <div class="priority-rank" style="background:var(--red)">2</div>
+      <div class="priority-info">
+        <div class="priority-name">Eliana Torres → Camila</div>
+        <div class="priority-detail">NEVER contacted · Youth lead · In CRM 42 days</div>
+      </div>
+      <div class="priority-days" style="color:var(--red)">42d</div>
+    </div>
+    <div class="priority-item">
+      <div class="priority-rank" style="background:var(--red)">3</div>
+      <div class="priority-info">
+        <div class="priority-name">Shannon Boxell</div>
+        <div class="priority-detail">NEVER contacted · No student info · In CRM 40 days</div>
+      </div>
+      <div class="priority-days" style="color:var(--red)">40d</div>
+    </div>
+    <div class="priority-item">
+      <div class="priority-rank" style="background:var(--orange)">4</div>
+      <div class="priority-info">
+        <div class="priority-name">Valencia Lewis-Davis</div>
+        <div class="priority-detail">New lead (Adult) · Last contacted Jan 27 · Very cold</div>
+      </div>
+      <div class="priority-days" style="color:var(--red)">57d</div>
+    </div>
+    <div class="priority-item">
+      <div class="priority-rank" style="background:var(--orange)">5</div>
+      <div class="priority-info">
+        <div class="priority-name">Hollie Alvarado → Emma</div>
+        <div class="priority-detail">Appt set · Last inbound was 9 days ago · Needs check-in</div>
+      </div>
+      <div class="priority-days" style="color:var(--orange)">9d</div>
+    </div>
+    <div class="priority-item">
+      <div class="priority-rank" style="background:var(--orange)">6</div>
+      <div class="priority-info">
+        <div class="priority-name">Katie Norman → Gwen</div>
+        <div class="priority-detail">Youth lead · Last contacted Feb 16 · Try one more time</div>
+      </div>
+      <div class="priority-days" style="color:var(--red)">37d</div>
+    </div>
+    <div class="priority-item">
+      <div class="priority-rank" style="background:var(--orange)">7</div>
+      <div class="priority-info">
+        <div class="priority-name">Terrell Chatman</div>
+        <div class="priority-detail">Adult lead · Replied to us 28 days ago — we went quiet</div>
+      </div>
+      <div class="priority-days" style="color:var(--red)">28d</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📊 Funnel Overview</h3>
+    <div class="funnel-item" style="background:#f0fff4;border:1px solid #bbf7d0">
+      <div>
+        <div class="funnel-label">✅ Invoice Paid</div>
+        <div class="funnel-pct">enrolled / won</div>
+      </div>
+      <div class="funnel-count" style="color:var(--green)">2</div>
+    </div>
+    <div class="funnel-item" style="background:#fff7ed;border:1px solid #fed7aa">
+      <div>
+        <div class="funnel-label">📄 Invoice Sent</div>
+        <div class="funnel-pct">waiting on payment</div>
+      </div>
+      <div class="funnel-count" style="color:var(--orange)">2</div>
+    </div>
+    <div class="funnel-item" style="background:#eff6ff;border:1px solid #bfdbfe">
+      <div>
+        <div class="funnel-label">📅 Appointment Set</div>
+        <div class="funnel-pct">trial scheduled</div>
+      </div>
+      <div class="funnel-count" style="color:var(--blue)">6</div>
+    </div>
+    <div class="funnel-item" style="background:#f0f9ff;border:1px solid #b9e0f3">
+      <div>
+        <div class="funnel-label">📬 In Outreach Sequence</div>
+        <div class="funnel-pct">automated follow-up running</div>
+      </div>
+      <div class="funnel-count" style="color:var(--teal)">8</div>
+    </div>
+    <div class="funnel-item" style="background:#fafaf9;border:1px solid #e5e7eb">
+      <div>
+        <div class="funnel-label">👋 New Lead / Touched</div>
+        <div class="funnel-pct">contacted, no next step yet</div>
+      </div>
+      <div class="funnel-count" style="color:var(--sub)">15</div>
+    </div>
+    <div class="funnel-item" style="background:#fff1f0;border:1px solid #ffccc7">
+      <div>
+        <div class="funnel-label">🚫 Never Contacted</div>
+        <div class="funnel-pct">zero human outreach</div>
+      </div>
+      <div class="funnel-count" style="color:var(--red)">5</div>
+    </div>
+    <div style="margin-top:10px;padding:8px 10px;background:#faf5ff;border:1px solid #e9d5ff;border-radius:var(--radius-sm);font-size:11.5px;color:var(--sub)">
+      ⚠️ <strong style="color:#7c3aed">Disqualified:</strong> Ericka Morris sent STOP · should be archived
+    </div>
+  </div>
+</div>
+
+<!-- NEVER CONTACTED SECTION -->
+<div class="never-card">
+  <h3>🚨 Never Contacted — These Leads Have Never Had a Real Human Message</h3>
+  <div class="sub">Zero outbound human contact. Every day you wait, the colder they get. Assign someone now.</div>
+  <div class="never-grid">
+    <div class="never-item">
+      <div class="never-name">Abbagail Rosenquist</div>
+      <div class="never-meta">No student listed · unclear program</div>
+      <div class="never-days">42d</div>
+      <div class="never-label">days in CRM, no contact</div>
+    </div>
+    <div class="never-item">
+      <div class="never-name">Eliana Torres</div>
+      <div class="never-meta">Student: Camila · youth pipeline</div>
+      <div class="never-days">42d</div>
+      <div class="never-label">days in CRM, no contact</div>
+    </div>
+    <div class="never-item">
+      <div class="never-name">Shannon Boxell</div>
+      <div class="never-meta">No student listed · source unknown</div>
+      <div class="never-days">40d</div>
+      <div class="never-label">days in CRM, no contact</div>
+    </div>
+    <div class="never-item">
+      <div class="never-name">Lauren H</div>
+      <div class="never-meta">Student: Rumi · preview day 3-5yr · automated sequence ran but zero personal msg</div>
+      <div class="never-days">28d</div>
+      <div class="never-label">days, no human touch</div>
+    </div>
+    <div class="never-item">
+      <div class="never-name">Shailesh Gupta</div>
+      <div class="never-meta">Adult lead · still warm window</div>
+      <div class="never-days">15d</div>
+      <div class="never-label">days in CRM, no contact</div>
+    </div>
+  </div>
+</div>
+
+<!-- ALL LEADS TABLE -->
+<div class="table-card">
+  <h3>All Active Leads — Sorted by Urgency</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Parent / Contact</th>
+        <th>Student</th>
+        <th>Source / Tags</th>
+        <th>Status</th>
+        <th>Added</th>
+        <th>Last Touch</th>
+        <th>Silent</th>
+      </tr>
+    </thead>
+    <tbody>
+
+<!-- NEVER CONTACTED -->
+<tr class="row-never">
+  <td style="color:var(--label)">1</td>
+  <td><strong>Abbagail Rosenquist</strong></td>
+  <td>—</td>
+  <td></td>
+  <td><span class="tag tag-red">Never Contacted</span></td>
+  <td>Feb 11</td>
+  <td style="color:var(--red)">—</td>
+  <td><span class="days-never">42d</span></td>
+</tr>
+<tr class="row-never">
+  <td style="color:var(--label)">2</td>
+  <td><strong>Eliana Torres</strong></td>
+  <td>Camila</td>
+  <td><span class="tag tag-gray">youth</span></td>
+  <td><span class="tag tag-red">Never Contacted</span></td>
+  <td>Feb 11</td>
+  <td style="color:var(--red)">—</td>
+  <td><span class="days-never">42d</span></td>
+</tr>
+<tr class="row-never">
+  <td style="color:var(--label)">3</td>
+  <td><strong>Shannon Boxell</strong></td>
+  <td>—</td>
+  <td></td>
+  <td><span class="tag tag-red">Never Contacted</span></td>
+  <td>Feb 13</td>
+  <td style="color:var(--red)">—</td>
+  <td><span class="days-never">40d</span></td>
+</tr>
+<tr class="row-never">
+  <td style="color:var(--label)">4</td>
+  <td><strong>Lauren H</strong></td>
+  <td>Rumi</td>
+  <td><span class="tag tag-gray">preview 3-5yr</span></td>
+  <td><span class="tag tag-red">No Human Touch</span></td>
+  <td>Feb 25</td>
+  <td style="color:var(--red)">Automated only</td>
+  <td><span class="days-never">28d</span></td>
+</tr>
+<tr class="row-never">
+  <td style="color:var(--label)">5</td>
+  <td><strong>Shailesh Gupta</strong></td>
+  <td>Shailesh (Adult)</td>
+  <td><span class="tag tag-purple">adult</span></td>
+  <td><span class="tag tag-red">Never Contacted</span></td>
+  <td>Mar 10</td>
+  <td style="color:var(--red)">—</td>
+  <td><span class="days-never">15d</span></td>
+</tr>
+
+<!-- VERY STALE / HOT ISSUES -->
+<tr class="row-hot">
+  <td style="color:var(--label)">6</td>
+  <td><strong>Valencia Lewis-Davis</strong></td>
+  <td>Valencia (Adult)</td>
+  <td><span class="tag tag-purple">adult</span></td>
+  <td><span class="tag tag-gray">New Lead</span></td>
+  <td>Jan 25</td>
+  <td>Jan 27</td>
+  <td><span class="days-danger">57d</span></td>
+</tr>
+<tr class="row-hot">
+  <td style="color:var(--label)">7</td>
+  <td><strong>Addison Robbins</strong></td>
+  <td>—</td>
+  <td><span class="tag tag-gray">open house</span></td>
+  <td><span class="tag tag-gray">Cold</span></td>
+  <td>Jan 29</td>
+  <td>Jan 30</td>
+  <td><span class="days-danger">54d</span></td>
+</tr>
+<tr class="row-hot">
+  <td style="color:var(--label)">8</td>
+  <td><strong>Katie Norman</strong></td>
+  <td>Gwen</td>
+  <td><span class="tag tag-gray">youth</span></td>
+  <td><span class="tag tag-gray">New Lead</span></td>
+  <td>Feb 3</td>
+  <td>Feb 16</td>
+  <td><span class="days-danger">37d</span></td>
+</tr>
+<tr class="row-hot">
+  <td style="color:var(--label)">9</td>
+  <td><strong>Ana Velasco</strong></td>
+  <td>Ana (Adult)</td>
+  <td><span class="tag tag-purple">adult</span></td>
+  <td><span class="tag tag-gray">New Lead</span></td>
+  <td>Jan 30</td>
+  <td>Feb 20 ↩</td>
+  <td><span class="days-danger">33d</span></td>
+</tr>
+<tr class="row-hot">
+  <td style="color:var(--label)">10</td>
+  <td><strong>GABRIELA MURILLO</strong></td>
+  <td>Angelina</td>
+  <td><span class="tag tag-gray">youth</span></td>
+  <td><span class="tag tag-gray">Cold</span></td>
+  <td>Feb 17</td>
+  <td>Feb 19</td>
+  <td><span class="days-danger">34d</span></td>
+</tr>
+<tr class="row-hot">
+  <td style="color:var(--label)">11</td>
+  <td><strong>Daisy Su</strong></td>
+  <td>Joy</td>
+  <td><span class="tag tag-gray">youth</span></td>
+  <td><span class="tag tag-gray">New Lead</span></td>
+  <td>Feb 18</td>
+  <td>Feb 23</td>
+  <td><span class="days-danger">30d</span></td>
+</tr>
+<tr class="row-hot">
+  <td style="color:var(--label)">12</td>
+  <td><strong>Emilie Fonkou</strong></td>
+  <td>Happiness</td>
+  <td><span class="tag tag-gray">youth</span></td>
+  <td><span class="tag tag-gray">New Lead</span></td>
+  <td>Feb 3</td>
+  <td>Feb 25</td>
+  <td><span class="days-danger">28d</span></td>
+</tr>
+<tr class="row-hot">
+  <td style="color:var(--label)">13</td>
+  <td><strong>Terrell Chatman</strong></td>
+  <td>Terrell (Adult)</td>
+  <td><span class="tag tag-purple">adult</span></td>
+  <td><span class="tag tag-gray">New Lead</span></td>
+  <td>Feb 18</td>
+  <td>Feb 25 ↩</td>
+  <td><span class="days-danger">28d</span></td>
+</tr>
+<tr class="row-hot">
+  <td style="color:var(--label)">14</td>
+  <td><strong>Stacy Jester</strong></td>
+  <td>Stacy (Adult)</td>
+  <td><span class="tag tag-purple">adult</span></td>
+  <td><span class="tag tag-gray">New Lead</span></td>
+  <td>Feb 25</td>
+  <td>Feb 26</td>
+  <td><span class="days-danger">27d</span></td>
+</tr>
+<tr class="row-hot">
+  <td style="color:var(--label)">15</td>
+  <td><strong>Isabella (Bella) Nicholls</strong></td>
+  <td>Bella</td>
+  <td></td>
+  <td><span class="tag tag-gray">Cold</span></td>
+  <td>Feb 17</td>
+  <td>Mar 5</td>
+  <td><span class="days-danger">20d</span></td>
+</tr>
+<tr class="row-hot">
+  <td style="color:var(--label)">16</td>
+  <td><strong>Lauren Tindal</strong></td>
+  <td>Alice</td>
+  <td><span class="tag tag-gray">youth</span></td>
+  <td><span class="tag tag-gray">New Lead</span></td>
+  <td>Mar 3</td>
+  <td>Mar 3</td>
+  <td><span class="days-danger">22d</span></td>
+</tr>
+<tr class="row-hot">
+  <td style="color:var(--label)">17</td>
+  <td><strong>Stephanie Targac</strong></td>
+  <td>Otto</td>
+  <td><span class="tag tag-gray">youth</span></td>
+  <td><span class="tag tag-gray">New Lead</span></td>
+  <td>Feb 28</td>
+  <td>Mar 4</td>
+  <td><span class="days-danger">21d</span></td>
+</tr>
+<tr class="row-hot">
+  <td style="color:var(--label)">18</td>
+  <td><strong>Silvia Reyes</strong></td>
+  <td>Alexa</td>
+  <td><span class="tag tag-gray">youth</span></td>
+  <td><span class="tag tag-gray">Cold</span></td>
+  <td>Feb 13</td>
+  <td>Feb 13</td>
+  <td><span class="days-danger">40d</span></td>
+</tr>
+
+<!-- INVOICE / PAYMENT -->
+<tr>
+  <td style="color:var(--label)">19</td>
+  <td><strong>Holly Sadler</strong></td>
+  <td>Nora</td>
+  <td><span class="tag tag-gray">youth</span></td>
+  <td><span class="tag tag-orange">Invoice Sent</span></td>
+  <td>Mar 6</td>
+  <td>Mar 25 ✓</td>
+  <td><span class="days-fresh">0d</span></td>
+</tr>
+<tr>
+  <td style="color:var(--label)">20</td>
+  <td><strong>Laura Moore</strong></td>
+  <td>—</td>
+  <td><span class="tag tag-purple">adult web</span></td>
+  <td><span class="tag tag-orange">Invoice Sent</span></td>
+  <td>Mar 7</td>
+  <td>Mar 24</td>
+  <td><span class="days-fresh">1d</span></td>
+</tr>
+<tr>
+  <td style="color:var(--label)">21</td>
+  <td><strong>Michaela Anastasiou</strong></td>
+  <td>Fiona</td>
+  <td><span class="tag tag-gray">youth</span></td>
+  <td><span class="tag tag-green">Invoice Paid ✓</span></td>
+  <td>Feb 15</td>
+  <td>Mar 25</td>
+  <td><span class="days-fresh">0d</span></td>
+</tr>
+<tr>
+  <td style="color:var(--label)">22</td>
+  <td><strong>Stephanie Hutchinson</strong></td>
+  <td>Sophie</td>
+  <td></td>
+  <td><span class="tag tag-green">Invoice Paid ✓</span></td>
+  <td>Mar 2</td>
+  <td>Mar 10</td>
+  <td><span class="days-danger">15d</span></td>
+</tr>
+
+<!-- APPT SET -->
+<tr class="row-fresh">
+  <td style="color:var(--label)">23</td>
+  <td><strong>Sanjana Patri</strong></td>
+  <td>Sanjana (Adult)</td>
+  <td><span class="tag tag-purple">adult</span></td>
+  <td><span class="tag tag-blue">Appt Set</span></td>
+  <td>Feb 19</td>
+  <td>Mar 25 ✓</td>
+  <td><span class="days-fresh">0d</span></td>
+</tr>
+<tr class="row-fresh">
+  <td style="color:var(--label)">24</td>
+  <td><strong>Ashlyn Franco Cortez</strong></td>
+  <td>Ashlyn (Adult)</td>
+  <td><span class="tag tag-purple">adult</span></td>
+  <td><span class="tag tag-blue">Appt Set</span></td>
+  <td>Feb 13</td>
+  <td>Mar 25 ✓</td>
+  <td><span class="days-fresh">0d</span></td>
+</tr>
+<tr class="row-fresh">
+  <td style="color:var(--label)">25</td>
+  <td><strong>Aimee Drake</strong></td>
+  <td>Aimee (Adult)</td>
+  <td><span class="tag tag-purple">adult</span></td>
+  <td><span class="tag tag-blue">Appt Set</span></td>
+  <td>Mar 2</td>
+  <td>Mar 25 ✓</td>
+  <td><span class="days-fresh">0d</span></td>
+</tr>
+<tr class="row-fresh">
+  <td style="color:var(--label)">26</td>
+  <td><strong>Gracie Hageman</strong></td>
+  <td>Gracie (Adult)</td>
+  <td><span class="tag tag-purple">adult</span></td>
+  <td><span class="tag tag-blue">Appt Set</span></td>
+  <td>Mar 8</td>
+  <td>Mar 25 ✓</td>
+  <td><span class="days-fresh">0d</span></td>
+</tr>
+<tr class="row-fresh">
+  <td style="color:var(--label)">27</td>
+  <td><strong>Tammy Oatley</strong></td>
+  <td>Tammy (CTR Adult)</td>
+  <td><span class="tag tag-purple">adult</span></td>
+  <td><span class="tag tag-blue">Appt Set</span></td>
+  <td>Mar 11</td>
+  <td>Mar 25 ✓</td>
+  <td><span class="days-fresh">0d</span></td>
+</tr>
+<tr>
+  <td style="color:var(--label)">28</td>
+  <td><strong>Hollie Alvarado</strong></td>
+  <td>Emma</td>
+  <td><span class="tag tag-gray">youth</span></td>
+  <td><span class="tag tag-blue">Appt Set</span></td>
+  <td>Feb 22</td>
+  <td>Mar 16 ↩</td>
+  <td><span class="days-warn">9d</span></td>
+</tr>
+
+<!-- IN SEQUENCE -->
+<tr class="row-fresh">
+  <td style="color:var(--label)">29</td>
+  <td><strong>Emalie Hardcastle</strong></td>
+  <td>Emalie (Adult)</td>
+  <td><span class="tag tag-purple">adult</span></td>
+  <td><span class="tag tag-blue">In Sequence</span></td>
+  <td>Mar 19</td>
+  <td>Mar 24</td>
+  <td><span class="days-fresh">1d</span></td>
+</tr>
+<tr class="row-fresh">
+  <td style="color:var(--label)">30</td>
+  <td><strong>Kelsey Wick</strong></td>
+  <td>Kelsey (Adult)</td>
+  <td><span class="tag tag-purple">adult</span></td>
+  <td><span class="tag tag-blue">In Sequence</span></td>
+  <td>Mar 9</td>
+  <td>Mar 23</td>
+  <td><span class="days-fresh">2d</span></td>
+</tr>
+<tr class="row-fresh">
+  <td style="color:var(--label)">31</td>
+  <td><strong>Claire Ratliff</strong></td>
+  <td>Jane</td>
+  <td><span class="tag tag-gray">youth</span></td>
+  <td><span class="tag tag-blue">In Sequence</span></td>
+  <td>Mar 22</td>
+  <td>Mar 25 ✓</td>
+  <td><span class="days-fresh">0d</span></td>
+</tr>
+<tr>
+  <td style="color:var(--label)">32</td>
+  <td><strong>Marla Swett</strong></td>
+  <td>Marla (Adult)</td>
+  <td><span class="tag tag-purple">adult</span></td>
+  <td><span class="tag tag-blue">In Sequence</span></td>
+  <td>Feb 26</td>
+  <td>Mar 18</td>
+  <td><span class="days-warn">7d</span></td>
+</tr>
+<tr>
+  <td style="color:var(--label)">33</td>
+  <td><strong>Tania Gonzalez</strong></td>
+  <td>Sofia</td>
+  <td><span class="tag tag-gray">youth</span></td>
+  <td><span class="tag tag-blue">In Sequence</span></td>
+  <td>Feb 25</td>
+  <td>Mar 16</td>
+  <td><span class="days-warn">9d</span></td>
+</tr>
+<tr>
+  <td style="color:var(--label)">34</td>
+  <td><strong>Julie McBride</strong></td>
+  <td>Addie</td>
+  <td><span class="tag tag-gray">youth</span></td>
+  <td><span class="tag tag-blue">In Sequence</span></td>
+  <td>Mar 9</td>
+  <td>Mar 16</td>
+  <td><span class="days-warn">9d</span></td>
+</tr>
+<tr>
+  <td style="color:var(--label)">35</td>
+  <td><strong>Erika V. Morris</strong></td>
+  <td>Noemi</td>
+  <td><span class="tag tag-gray">youth</span></td>
+  <td><span class="tag tag-gray">New Lead</span></td>
+  <td>Feb 26</td>
+  <td>Mar 16</td>
+  <td><span class="days-warn">9d</span></td>
+</tr>
+<tr>
+  <td style="color:var(--label)">36</td>
+  <td><strong>Lacie Vukmaravich</strong></td>
+  <td>—</td>
+  <td></td>
+  <td><span class="tag tag-gray">Cold</span></td>
+  <td>Jan 26</td>
+  <td>Jan 27</td>
+  <td><span class="days-danger">57d</span></td>
+</tr>
+
+<!-- DISQUALIFIED -->
+<tr style="opacity:.5">
+  <td style="color:var(--label)">37</td>
+  <td><strong>Ericka Morris</strong></td>
+  <td>—</td>
+  <td><span class="tag tag-red">STOP</span></td>
+  <td><span class="tag tag-gray">Disqualified</span></td>
+  <td>Feb 26</td>
+  <td>Mar 10</td>
+  <td><span class="days-danger">15d</span></td>
+</tr>
+
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  ↩ = last message was inbound (they texted/replied) &nbsp;·&nbsp; ✓ = contacted today &nbsp;·&nbsp;
+  Silent = days since last real human outbound message &nbsp;·&nbsp;
+  Last touch data sourced directly from GHL conversation history via Windsor.ai · March 25, 2026
+</div>
+
+</div>
+
+<script>
+function drawDonut(id, values, colors, stroke) {
+  const svg = document.getElementById(id);
+  if (!svg) return;
+  const cx = 45, cy = 45, r = 30;
+  const circ = 2 * Math.PI * r;
+  const total = values.reduce((a,b) => a+b, 0);
+  let offset = circ * 0.25; // start at 12 o'clock
+  values.forEach((v, i) => {
+    const dash = (v / total) * circ;
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', r);
+    c.setAttribute('fill','none'); c.setAttribute('stroke', colors[i]);
+    c.setAttribute('stroke-width', stroke || 18);
+    c.setAttribute('stroke-dasharray', `${dash} ${circ - dash}`);
+    c.setAttribute('stroke-dashoffset', offset);
+    svg.appendChild(c);
+    offset -= dash;
+  });
+}
+// Stage mix: Invoice Paid=2, Invoice Sent=2, Appt Set=6, In Sequence=8, New Lead=15, Never=5
+drawDonut('stagesSvg',[2,2,6,8,15,5],['#34C759','#FF9500','#007AFF','#5AC8FA','#8E8E93','#FF3B30'],20);
+// Inbound vs Outbound
+drawDonut('dirSvg',[28,8],['#007AFF','#34C759'],20);
+// Urgency
+drawDonut('urgSvg',[11,12,14],['#FF3B30','#FF9500','#34C759'],20);
+</script>
+</body>
+</html>
