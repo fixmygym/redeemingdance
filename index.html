@@ -182,6 +182,32 @@
     letter-spacing: .5px; margin-bottom: 4px; opacity: .6;
   }
   .intel-item:hover .msg-tooltip { display: block; }
+
+  /* ── MOBILE RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .wrap { padding: 16px 16px 40px; }
+    .header { flex-direction: column; align-items: flex-start; gap: 8px; padding: 16px 18px; }
+    .header-meta { text-align: left; }
+    .gameplan-card { padding: 16px 18px; }
+    .gameplan-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .charts-row { grid-template-columns: 1fr; gap: 10px; }
+    .two-col { grid-template-columns: 1fr; gap: 10px; }
+    .intel-grid { grid-template-columns: 1fr; }
+    .intel-col { border-right: none; border-bottom: 1px solid var(--border); }
+    .intel-col:last-child { border-bottom: none; }
+    .table-card { padding: 14px 10px; overflow-x: auto; }
+    table { min-width: 600px; }
+    .never-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  }
+
+  @media (max-width: 540px) {
+    .gameplan-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .kpi-value { font-size: 26px; letter-spacing: -1px; }
+    .header h1 { font-size: 17px; }
+    .intel-item .msg-tooltip { width: calc(100vw - 40px); left: 0; }
+  }
 </style>
 </head>
 <body>
