@@ -6,47 +6,47 @@
 <title>Redeeming Dance — Leads Dashboard</title>
 <style>
   :root {
-    --blue: #007AFF; --green: #34C759; --red: #FF3B30; --orange: #FF9500;
+    --blue: #0071E3; --green: #1D8348; --red: #FF3B30; --orange: #FF9500;
     --teal: #5AC8FA; --purple: #AF52DE; --indigo: #5856D6;
-    --bg: #F2F2F7; --card: #FFFFFF; --border: #E5E5EA;
-    --text: #1C1C1E; --sub: #6C6C70; --label: #8E8E93;
-    --radius: 14px; --radius-sm: 8px;
-    --shadow: 0 2px 8px rgba(0,0,0,.07), 0 0 0 1px rgba(0,0,0,.04);
+    --bg: #F5F5F7; --card: #FFFFFF; --border: rgba(0,0,0,.1);
+    --text: #1D1D1F; --sub: #6E6E73; --label: #86868B;
+    --radius: 18px; --radius-sm: 10px;
+    --shadow: 0 2px 12px rgba(0,0,0,.06);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
-    background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
-  .wrap { max-width: 1280px; margin: 0 auto; padding: 20px 20px 40px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.47059; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 28px 28px 56px; }
   .header { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
-    padding: 18px 24px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
-  .header h1 { font-size: 20px; font-weight: 700; letter-spacing: -.4px; }
+    padding: 22px 28px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
+  .header h1 { font-size: 21px; font-weight: 700; letter-spacing: -.5px; color: var(--text); }
   .header-meta { font-size: 12px; color: var(--label); text-align: right; }
-  .header-meta strong { color: var(--text); display: block; font-size: 13px; }
+  .header-meta strong { color: var(--text); display: block; font-size: 13px; font-weight: 500; }
   .gameplan-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
-    padding: 18px 22px; margin-bottom: 16px; border-left: 5px solid var(--orange); }
-  .gameplan-card h2 { font-size: 14px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: .6px; color: var(--orange); margin-bottom: 4px; }
-  .gameplan-subtitle { font-size: 12px; color: var(--sub); margin-bottom: 14px; }
-  .gameplan-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-  .gp-col { border-radius: var(--radius-sm); padding: 14px 16px; }
-  .gp-col h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
-  .gp-col-urgent { background: #fff1f0; border: 1px solid #ffccc7; }
+    padding: 22px 28px; margin-bottom: 20px; }
+  .gameplan-card h2 { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .9px; color: var(--label); margin-bottom: 3px; }
+  .gameplan-subtitle { font-size: 13px; color: var(--sub); margin-bottom: 16px; font-weight: 400; }
+  .gameplan-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .gp-col { border-radius: var(--radius-sm); padding: 16px 18px; }
+  .gp-col h3 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .7px; margin-bottom: 12px; }
+  .gp-col-urgent { background: #FAFAFA; border: 1px solid var(--border); border-top: 2px solid var(--red); }
   .gp-col-urgent h3 { color: var(--red); }
-  .gp-col-money { background: #fffbe6; border: 1px solid #ffe58f; }
-  .gp-col-money h3 { color: #b8770f; }
-  .gp-col-cold { background: #f0f5ff; border: 1px solid #adc6ff; }
+  .gp-col-money { background: #FAFAFA; border: 1px solid var(--border); border-top: 2px solid var(--orange); }
+  .gp-col-money h3 { color: var(--orange); }
+  .gp-col-cold { background: #FAFAFA; border: 1px solid var(--border); border-top: 2px solid var(--indigo); }
   .gp-col-cold h3 { color: var(--indigo); }
-  .gp-col-warm { background: #f6ffed; border: 1px solid #b7eb8f; }
-  .gp-col-warm h3 { color: #389e0d; }
-  .gp-item { font-size: 12.5px; padding: 6px 0; border-bottom: 1px solid rgba(0,0,0,.06); line-height: 1.4; }
+  .gp-col-warm { background: #FAFAFA; border: 1px solid var(--border); border-top: 2px solid var(--green); }
+  .gp-col-warm h3 { color: var(--green); }
+  .gp-item { font-size: 13px; padding: 7px 0; border-bottom: 1px solid rgba(0,0,0,.05); line-height: 1.4; }
   .gp-item:last-child { border-bottom: none; padding-bottom: 0; }
-  .gp-item strong { display: block; font-weight: 600; }
-  .gp-item span { color: var(--sub); font-size: 11.5px; }
-  .kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 16px; }
-  .kpi { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px 18px; }
-  .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--label); margin-bottom: 6px; }
-  .kpi-value { font-size: 28px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
-  .kpi-sub { font-size: 11px; color: var(--sub); margin-top: 4px; }
+  .gp-item strong { display: block; font-weight: 500; color: var(--text); }
+  .gp-item span { color: var(--sub); font-size: 12px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; margin-bottom: 20px; }
+  .kpi { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 22px; }
+  .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: .8px; color: var(--label); margin-bottom: 8px; font-weight: 500; }
+  .kpi-value { font-size: 34px; font-weight: 700; letter-spacing: -1.5px; line-height: 1; color: var(--text); }
+  .kpi-sub { font-size: 12px; color: var(--sub); margin-top: 6px; }
   .kpi.red .kpi-value { color: var(--red); }
   .kpi.orange .kpi-value { color: var(--orange); }
   .kpi.green .kpi-value { color: var(--green); }
@@ -82,28 +82,106 @@
   .never-meta { font-size: 11px; color: var(--sub); margin-top: 2px; }
   .never-days { font-size: 26px; font-weight: 800; color: var(--red); line-height: 1; margin-top: 10px; }
   .never-label { font-size: 10px; color: var(--red); opacity: .7; }
-  .table-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px 20px; }
-  .table-card h3 { font-size: 13px; font-weight: 600; margin-bottom: 14px; }
+  .table-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px 24px; }
+  .table-card h3 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .8px; color: var(--label); margin-bottom: 16px; }
   table { width: 100%; border-collapse: collapse; }
-  th { font-size: 10.5px; text-transform: uppercase; letter-spacing: .5px; color: var(--label); font-weight: 600; padding: 0 10px 10px; text-align: left; border-bottom: 1px solid var(--border); }
-  td { padding: 9px 10px; font-size: 12.5px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: .7px; color: var(--label); font-weight: 500; padding: 0 12px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  td { padding: 11px 12px; font-size: 13px; border-bottom: 1px solid rgba(0,0,0,.05); vertical-align: middle; color: var(--text); }
   tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #fafafa; }
-  .tag { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10.5px; font-weight: 500; margin: 1px 2px; }
-  .tag-green { background: #f0fff4; color: #16a34a; border: 1px solid #bbf7d0; }
-  .tag-blue { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
-  .tag-orange { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
-  .tag-purple { background: #faf5ff; color: #7c3aed; border: 1px solid #e9d5ff; }
-  .tag-red { background: #fff1f0; color: #dc2626; border: 1px solid #fecaca; }
-  .tag-gray { background: #f9fafb; color: #4b5563; border: 1px solid #e5e7eb; }
-  .days-fresh { color: var(--green); font-weight: 700; font-size: 11.5px; }
-  .days-warn { color: var(--orange); font-weight: 700; font-size: 11.5px; }
-  .days-danger { color: var(--red); font-weight: 700; font-size: 11.5px; }
-  .days-never { background: #ffe5e5; color: var(--red); font-weight: 700; font-size: 10.5px; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
-  .row-never td { background: #fff8f8; }
-  .row-hot td { background: #fff8f0; }
-  .row-fresh td { background: #f7fff9; }
-  .footer { text-align: center; font-size: 11px; color: var(--label); margin-top: 24px; }
+  tr:hover td { background: rgba(0,0,0,.02); }
+  .tag { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; margin: 1px 2px; }
+  .tag-green { background: rgba(52,199,89,.1); color: #1A7A35; }
+  .tag-blue { background: rgba(0,113,227,.1); color: #0059B3; }
+  .tag-orange { background: rgba(255,149,0,.12); color: #C47000; }
+  .tag-purple { background: rgba(175,82,222,.1); color: #7B2FAF; }
+  .tag-red { background: rgba(255,59,48,.1); color: #CC2B22; }
+  .tag-gray { background: rgba(0,0,0,.06); color: var(--sub); }
+  .days-fresh { color: #1A7A35; font-weight: 600; font-size: 12px; }
+  .days-warn { color: #C47000; font-weight: 600; font-size: 12px; }
+  .days-danger { color: var(--red); font-weight: 600; font-size: 12px; }
+  .days-never { background: rgba(255,59,48,.1); color: var(--red); font-weight: 600; font-size: 11px; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+  .row-never td { background: transparent; }
+  .row-hot td { background: transparent; }
+  .row-fresh td { background: transparent; }
+  .footer { text-align: center; font-size: 12px; color: var(--label); margin-top: 32px; }
+
+  /* ── PRIORITY INTELLIGENCE ── */
+  .intel-section { margin-bottom: 20px; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .intel-banner {
+    background: transparent;
+    padding: 18px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .intel-banner h2 { color: var(--text); font-size: 15px; font-weight: 600; letter-spacing: -.3px; }
+  .intel-banner span { color: var(--sub); font-size: 13px; }
+  .intel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+  .intel-col {
+    background: transparent; padding: 18px 22px;
+    border-right: 1px solid var(--border);
+  }
+  .intel-col:last-child { border-right: none; }
+  .intel-col-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .8px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+  }
+  .intel-col.fire .intel-col-title { color: var(--red); }
+  .intel-col.dropped .intel-col-title { color: var(--orange); }
+  .intel-col.warm .intel-col-title { color: #0091B5; }
+  .intel-col.fire { border-top: 2px solid var(--red); }
+  .intel-col.dropped { border-top: 2px solid var(--orange); }
+  .intel-col.warm { border-top: 2px solid #00B4D8; }
+
+  /* Priority cards within intel */
+  .intel-item {
+    position: relative;
+    padding: 11px 13px; border-radius: var(--radius-sm); margin-bottom: 8px;
+    cursor: default; transition: box-shadow .2s, transform .2s;
+    border: 1px solid transparent;
+  }
+  .intel-col.fire .intel-item { background: rgba(255,59,48,.06); border-color: rgba(255,59,48,.15); }
+  .intel-col.dropped .intel-item { background: rgba(255,149,0,.07); border-color: rgba(255,149,0,.2); }
+  .intel-col.warm .intel-item { background: rgba(0,180,216,.06); border-color: rgba(0,180,216,.18); }
+  .intel-item:hover { box-shadow: 0 4px 20px rgba(0,0,0,.1); transform: translateY(-1px); z-index: 10; }
+  .intel-item:last-child { margin-bottom: 0; }
+  .intel-name { font-weight: 600; font-size: 13px; color: var(--text); }
+  .intel-context { font-size: 12px; color: var(--sub); margin-top: 3px; line-height: 1.4; }
+  .intel-days {
+    display: inline-block; margin-top: 6px;
+    font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px;
+  }
+  .intel-col.fire .intel-days { background: rgba(255,59,48,.12); color: var(--red); }
+  .intel-col.dropped .intel-days { background: rgba(255,149,0,.15); color: #C47000; }
+  .intel-col.warm .intel-days { background: rgba(0,180,216,.12); color: #0091B5; }
+
+  /* Pulsing ring on fire items */
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(255,59,48,.4); }
+    70% { box-shadow: 0 0 0 6px rgba(255,59,48,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,59,48,0); }
+  }
+  .intel-col.fire .intel-item.critical { animation: pulse-ring 2s infinite; }
+
+  /* Tooltip bubble */
+  .intel-item .msg-tooltip {
+    display: none;
+    position: absolute; left: 0; top: calc(100% + 6px);
+    width: 280px; background: #1C1C1E; color: #fff;
+    font-size: 12px; line-height: 1.5; padding: 10px 13px;
+    border-radius: 10px; z-index: 100;
+    box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    pointer-events: none;
+  }
+  .intel-item .msg-tooltip::before {
+    content: ''; position: absolute; top: -6px; left: 16px;
+    border: 6px solid transparent; border-bottom-color: #1C1C1E;
+    border-top: none;
+  }
+  .intel-item .msg-tooltip .tooltip-dir {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .5px; margin-bottom: 4px; opacity: .6;
+  }
+  .intel-item:hover .msg-tooltip { display: block; }
 </style>
 </head>
 <body>
@@ -111,7 +189,7 @@
 
 <div class="header">
   <div>
-    <h1>💃 Redeeming Dance — Leads Dashboard</h1>
+    <h1>Redeeming Dance — Leads Dashboard</h1>
     <div style="font-size:12px;color:var(--sub);margin-top:3px;">Active leads · Last 60 days · Live conversation data</div>
   </div>
   <div class="header-meta">
@@ -120,9 +198,216 @@
   </div>
 </div>
 
+<div class="intel-section">
+  <div class="intel-banner">
+    <h2>Conversation Intelligence</h2>
+    <span>Hover any card to see last message · Sorted by urgency</span>
+  </div>
+  <div class="intel-grid">
+
+    <!-- COL 1: FIRE — They replied, waiting on you -->
+    <div class="intel-col fire">
+      <div class="intel-col-title">They Replied — You Haven't</div>
+
+      <div class="intel-item critical">
+        <div class="intel-name">Chelley Cardinal</div>
+        <div class="intel-context">Just sent a heart + said "I was about to call you." Call her NOW.</div>
+        <div class="intel-days">0d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">👤 They said (today)</div>
+          🫶🏽 to "Was about to call you and then I saw your msg. Figured I'll still give you a ring after reading. You truly..."
+        </div>
+      </div>
+
+      <div class="intel-item critical">
+        <div class="intel-name">Mr. Alderete</div>
+        <div class="intel-context">Replied warmly — no follow-up in 8 days.</div>
+        <div class="intel-days">8d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">👤 They said (8 days ago)</div>
+          "Thank you very much!"
+        </div>
+      </div>
+
+      <div class="intel-item">
+        <div class="intel-name">Hollie Alvarado</div>
+        <div class="intel-context">Appt set, replied warmly — 9 days no follow-up.</div>
+        <div class="intel-days">9d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">👤 They said (9 days ago)</div>
+          "You as well. Thank you"
+        </div>
+      </div>
+
+      <div class="intel-item">
+        <div class="intel-name">Hannah Knox</div>
+        <div class="intel-context">Loved rescheduling to March 10 — did she show up? No follow-up since.</div>
+        <div class="intel-days">20d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">👤 They reacted (20 days ago)</div>
+          Loved "Hi Hannah, No worries, let's reschedule for next week Tuesday, March 10th at 7:00pm! :)"
+        </div>
+      </div>
+
+      <div class="intel-item">
+        <div class="intel-name">Jenni Wiggins → Alora</div>
+        <div class="intel-context">Loved the "Alora is set for 1st day" message. Is she enrolled or did this fall through?</div>
+        <div class="intel-days">20d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">👤 They reacted (20 days ago)</div>
+          Loved "Dear Jenni, this is Redeeming Dance - Yippee! Alora is set for their 1st day of the 14 Day Intro to Dance Program..."
+        </div>
+      </div>
+
+      <div class="intel-item">
+        <div class="intel-name">Zachary/Katie Norman</div>
+        <div class="intel-context">Loved your support message about Gwen & Dior — 32 days no follow-up.</div>
+        <div class="intel-days">32d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">👤 They reacted (32 days ago)</div>
+          Loved "Hi Katie, absolutely! We are here to support Gwen and Dior with their ballet, dance & life journey..."
+        </div>
+      </div>
+
+      <div class="intel-item">
+        <div class="intel-name">Yamilka Lahera</div>
+        <div class="intel-context">Spanish lead replied "si jaja esta bien" — agreed to something. Never closed.</div>
+        <div class="intel-days">46d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">👤 They said (46 days ago)</div>
+          "si jaja esta bien" — (agreed warmly in Spanish)
+        </div>
+      </div>
+
+    </div>
+
+    <!-- COL 2: DROPPED — They committed, we dropped the ball -->
+    <div class="intel-col dropped">
+      <div class="intel-col-title">You Dropped the Ball</div>
+
+      <div class="intel-item critical">
+        <div class="intel-name">Emilie Fonkou</div>
+        <div class="intel-context">She set a call time 28 days ago. Nobody called. Reach out with an apology.</div>
+        <div class="intel-days">28d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">👤 They said (28 days ago)</div>
+          "Hello Miss Elzanne. I will be available around 1 pm today for a call. Thank you for the prompt reply"
+        </div>
+      </div>
+
+      <div class="intel-item critical">
+        <div class="intel-name">BETHANY LOGAN</div>
+        <div class="intel-context">Said "call me back ASAP" — 30 days ago. Urgent tone.</div>
+        <div class="intel-days">30d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">📤 You sent (30 days ago)</div>
+          "Hi Bethany, Miss Elzanne here from Redeeming Dance. Give me a call back asap regarding your use of our sp..."
+        </div>
+      </div>
+
+      <div class="intel-item">
+        <div class="intel-name">Charlene Nass</div>
+        <div class="intel-context">You said "text those over when ready" — 27 days ago. Did she send them? Follow up.</div>
+        <div class="intel-days">27d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">📤 You said (27 days ago)</div>
+          "Perfect:) you can email or text those over when you are ready"
+        </div>
+      </div>
+
+      <div class="intel-item">
+        <div class="intel-name">Sara Morris</div>
+        <div class="intel-context">Said "Ok! Great!" to something 29 days ago — what did she agree to? Close it.</div>
+        <div class="intel-days">29d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">👤 They said (29 days ago)</div>
+          "Ok! Great!"
+        </div>
+      </div>
+
+      <div class="intel-item">
+        <div class="intel-name">Daisy Su</div>
+        <div class="intel-context">You shared class schedule options — she went quiet. 30 days no response.</div>
+        <div class="intel-days">30d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">📤 You sent (30 days ago)</div>
+          "It was so great chatting with you! Here are the current class options available: • Monday & Wednesday 4pm..."
+        </div>
+      </div>
+
+      <div class="intel-item">
+        <div class="intel-name">Joemaira Flores → Jadelyn</div>
+        <div class="intel-context">Confirmed for Saturday Feb 14. Then silence — 40 days.</div>
+        <div class="intel-days">40d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">📤 You sent (40 days ago)</div>
+          "Good morning Joemaira! So excited to see you and Jadelyn on Saturday (2/14). Friendly reminder that class..."
+        </div>
+      </div>
+
+    </div>
+
+    <!-- COL 3: WARM GOING COLD -->
+    <div class="intel-col warm">
+      <div class="intel-col-title">Warm — Act Before They Go Cold</div>
+
+      <div class="intel-item">
+        <div class="intel-name">Stephanie Hutchinson → Sophie</div>
+        <div class="intel-context">"Sophie did fantastic... a lot of potential." Perfect warm opener — convert now.</div>
+        <div class="intel-days">15d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">📤 You sent (15 days ago)</div>
+          "Hi Stephanie, Sophie did fantastic this past Friday. It was such a joy to teach her. She had a lot of potential..."
+        </div>
+      </div>
+
+      <div class="intel-item">
+        <div class="intel-name">Genevieve Ramirez → Emmery</div>
+        <div class="intel-context">Emmery was sick — you sent prayers. Gentle check-in appropriate now.</div>
+        <div class="intel-days">22d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">📤 You sent (22 days ago)</div>
+          "Hi Genevieve, Thank you for letting us know. We are praying for Emmery 🙏🏻💞 Hope everything else goes smoothly..."
+        </div>
+      </div>
+
+      <div class="intel-item">
+        <div class="intel-name">Anabel Oropesa</div>
+        <div class="intel-context">Sent you a 💛 — warm energy. 28 days with no follow-up.</div>
+        <div class="intel-days">28d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">📤 You sent (28 days ago)</div>
+          💛 — (warm reaction, conversation was positive)
+        </div>
+      </div>
+
+      <div class="intel-item">
+        <div class="intel-name">Marisol Zavala</div>
+        <div class="intel-context">Replied "Thank you!" — warm ending. 51 days of silence since.</div>
+        <div class="intel-days">51d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">👤 They said (51 days ago)</div>
+          "Thank you!"
+        </div>
+      </div>
+
+      <div class="intel-item">
+        <div class="intel-name">Ana Velasco</div>
+        <div class="intel-context">Reacted "Thank you:)" — positive. 33 days no touch.</div>
+        <div class="intel-days">33d ago</div>
+        <div class="msg-tooltip">
+          <div class="tooltip-dir">👤 They reacted (33 days ago)</div>
+          Loved "Thank you:)"
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <div class="gameplan-card">
-  <h2>🗓 Today's Game Plan</h2>
-  <div class="gameplan-subtitle">Hey team — here's who to focus on today. Read this before touching anything else.</div>
+  <h2>Today's Game Plan</h2>
+  <div class="gameplan-subtitle">Focus on these contacts today.</div>
   <div class="gameplan-grid">
     <div class="gp-col gp-col-urgent"><h3>🚨 Call Right Now</h3><div class="gp-item"><strong>Valencia Lewis-Davis → Valencia Lewis-Davis</strong><span>Adult lead · 58 days silent · Last: Jan 27 · Reach out now.</span></div><div class="gp-item"><strong>Lacie Vukmaravich</strong><span>Lead lead · 58 days silent · Last: Jan 27 · Reach out now.</span></div><div class="gp-item"><strong>Addison Robbins</strong><span>Open House lead · 55 days silent · Last: Jan 30 · Reach out now.</span></div><div class="gp-item"><strong>Katie Norman → Gwen</strong><span>Youth lead · 38 days silent · Last: Feb 16 · Reach out now.</span></div><div class="gp-item"><strong>Gabriela Murillo → Angelina Banegas</strong><span>Lead lead · 35 days silent · Last: Feb 19 · Reach out now.</span></div></div>
     <div class="gp-col gp-col-money"><h3>💰 Collect Payment</h3><div class="gp-item"><strong>Holly Sadler → Nora</strong><span>Invoice sent · Last contact: Mar 24 · Follow up — "Is the payment link working for you?"</span></div><div class="gp-item"><strong>Laura Moore</strong><span>Invoice sent · Last contact: Mar 24 · Follow up — "Is the payment link working for you?"</span></div></div>
@@ -140,7 +425,8 @@
   <div class="kpi blue"><div class="kpi-label">Total Active</div><div class="kpi-value">39</div><div class="kpi-sub">last 60 days</div></div>
 </div>
 
-<div class="charts-row">
+<!-- charts removed -->
+<div class="charts-row" style="display:none">
   <div class="chart-card">
     <h3>Stage Mix</h3>
     <div class="donut-wrap">
@@ -178,7 +464,8 @@
   </div>
 </div>
 
-<div class="two-col">
+<!-- priority hit list removed -->
+<div class="two-col" style="display:none">
   <div class="card">
     <h3>🎯 Priority Hit List — Who Needs a Call Today</h3>
     <div class="priority-item">
@@ -251,7 +538,8 @@
   </div>
 </div>
 
-<div class="never-card">
+<!-- never-card removed -->
+<div class="never-card" style="display:none">
   <h3>🚨 Never Contacted — These Leads Have Never Had a Real Human Message</h3>
   <div class="sub">Zero outbound human contact. Every day you wait, the colder they get. Assign someone now.</div>
   <div class="never-grid"><div class="never-item">
